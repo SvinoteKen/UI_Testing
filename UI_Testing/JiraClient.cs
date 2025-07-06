@@ -247,7 +247,6 @@ namespace UI_Testing
                 {
                     testCases.Add(link.InwardIssue);
                 }
-                // (по желанию) Если также надо учитывать inward связи
                 // с типом связи "tests", можно добавить аналогично.
             }
 
