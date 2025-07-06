@@ -24,7 +24,7 @@ namespace UI_Testing
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            DialogResult result;
+            //DialogResult result;
             //using (var loginForm = new LoginForm())
             //{
             //    result = loginForm.ShowDialog();

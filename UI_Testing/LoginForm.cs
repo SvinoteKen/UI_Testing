@@ -212,7 +212,6 @@ namespace UI_Testing
                     var encrypted = Encrypt($"{username}:{password}");
                     File.WriteAllBytes(CredentialsPath, encrypted);
                 }
-                MaterialMessageBox.Show("ЗАШЛИ");
                 OpenMainForm();
             }
         }

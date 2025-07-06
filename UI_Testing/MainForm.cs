@@ -71,8 +71,14 @@ namespace UI_Testing
             {
                 string version = textBoxVersion.Text;
                 if (version == "") { MaterialMessageBox.Show("Заполните поле \"Скоуп\""); return; }
-                rows = await LoadRowsFromJira(version);
-
+                if (!materialCheckbox1.Checked)
+                {
+                    rows = await LoadRowsFromJira(version);
+                }
+                else 
+                {
+                    rows = await ExportTestCasesFromUrl(version);
+                }
                 if (checkBoxPreview.Checked)
                 {
                     if (materialCheckbox.Checked)
@@ -163,7 +169,7 @@ namespace UI_Testing
         }
         private List<string> ExtractUrlsFromDescription(string description)
         {
-            var matches = Regex.Matches(description, "<a href=\"(https://jira\\.mos\\.social/secure/enav/[^\"]+)\"[^>]*>.*?(РЦ|Регрессионный цикл|Регрессионный ЦТ).*?</a>");
+            var matches = Regex.Matches(description, "<a href=\"(https://jira\\.mos\\.social/secure/enav/[^\"]+)\"[^>]*>.*?(РЦ|Регрессионный цикл|Регрессионный ЦТ|Регресс).*?</a>");
             return matches.Cast<Match>().Select(m => m.Groups[1].Value).Distinct().ToList();
         }
         private List<string> ExtractCycleUrls(string description)
@@ -320,6 +326,44 @@ namespace UI_Testing
                 rows.Add(caseRow);
             }
         }
+        public async Task<List<List<object>>> ExportTestCasesFromUrl(string url)
+        {
+            var jira = new JiraClient(login, password);
+            var parsed = jira.ParseZqlUrl(url);
+
+            var testCases = await jira.GetTestCasesFromCycle(
+                parsed.CycleName,
+                parsed.Version == "Незапланированные" ? "Unscheduled" : parsed.Version,
+                parsed.Project,
+                parsed.FolderNames,
+                parsed.ExecutionStatus
+            );
+
+            var rows = new List<List<object>>();
+            int number = 1;
+
+            foreach (var test in testCases)
+            {
+                string testLink = $"=ГИПЕРССЫЛКА(\"{JiraClient.BaseUrl}/browse/{test.Key}\"; \"{test.Key}\")";
+
+                var row = new List<object>
+                {
+                    number.ToString(), // ← Номер строки
+                    "Test case",
+                    testLink,
+                    test.Fields.Summary,
+                    "1", "", // Кол-во тестов, шагов
+                    "", // статус
+                    test.Fields.PriorityValue,
+                    "", "", "" // Статус проверки, тестировщик и т.д.
+                };
+
+                rows.Add(row);
+                number++; // ← Увеличиваем номер
+            }
+
+            return rows;
+        }
         private void FillPreviewTable(List<List<object>> rows, bool showPriority)
         {
             dataGridViewPreview.Columns.Clear();
@@ -399,6 +443,10 @@ namespace UI_Testing
             dataGridViewPreview.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dataGridViewPreview.MultiSelect = true;
             dataGridViewPreview.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            foreach (DataGridViewColumn column in dataGridViewPreview.Columns)
+            {
+                column.SortMode = DataGridViewColumnSortMode.NotSortable;
+            }
         }
 
         private void checkBoxNoStyle_CheckedChanged(object sender, EventArgs e)
@@ -436,6 +484,7 @@ namespace UI_Testing
             materialLabel4.Visible = false;
             checkBoxPreview.Enabled = true;
             tableLayoutPanel2.Visible = false;
+            materialCheckbox1.Visible = true;
             tableLayoutPanel1.Visible = true;
             textBox1.Visible = false;
             textBox1.Enabled = false;
@@ -462,7 +511,7 @@ namespace UI_Testing
             materialCheckbox.Visible = false;
             dataGridViewPreview.Visible = false;
             toolStripMenuItem2.Enabled = false;
-            
+            materialCheckbox1.Visible = false;
             tableLayoutPanel1.Controls.Add(textBox1, 0, 4);
             tableLayoutPanel1.SetColumnSpan(textBox1, 4);
             textBox1.Visible = true;
@@ -486,6 +535,7 @@ namespace UI_Testing
             checkBoxPreview.Visible = false;
             materialCheckbox.Visible = false;
             dataGridViewPreview.Visible = false;
+            materialCheckbox1.Visible = false;
             toolStripMenuItem2.Enabled = true;
             toolStripMenuItem1.Enabled = true;
             toolStripMenuItem3.Enabled = false;
@@ -505,7 +555,14 @@ namespace UI_Testing
             {
                 string version = textBoxVersion.Text;
                 if (version == "") { MaterialMessageBox.Show("Заполните поле \"Скоуп\""); return; }
-                rows = await LoadRowsFromJira(version);
+                if (!materialCheckbox1.Checked)
+                {
+                    rows = await LoadRowsFromJira(version);
+                }
+                else
+                {
+                    rows = await ExportTestCasesFromUrl(version);
+                }
 
                 // 1. Получаем URL таблицы из текстбокса
                 string sheetUrl = textBoxSheetUrl.Text.Trim();
@@ -526,7 +583,6 @@ namespace UI_Testing
                 // 5. Добавляем строки
                 helper.AddRowsToSheet($"{worksheetId}", lisrRows);
 
-                MaterialMessageBox.Show("Экспорт завершён.");
                 string sourceUrl = textBoxStyleSheetUrl.Text.Trim();
                 if (string.IsNullOrEmpty(sourceUrl))
                 {
@@ -681,7 +737,7 @@ namespace UI_Testing
                     stats.ClosedTasks++;
 
                 // Reopened
-                if (status == "Reopened")
+                if (status == "Reopened" || status == "Reopen")
                     stats.ReopenedTasks++;
 
                 // Resolved → не протестированные
@@ -701,6 +757,9 @@ namespace UI_Testing
                         stats.PassedWithBug += (int)testCount;
                         break;
                     case "Failed":
+                        stats.Failed += (int)testCount;
+                        break;
+                    case "Fail":
                         stats.Failed += (int)testCount;
                         break;
                 }

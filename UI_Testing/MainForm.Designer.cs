@@ -47,6 +47,7 @@ namespace UI_Testing
             this.materialButton2 = new MaterialSkin.Controls.MaterialButton();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.dataGridViewPreview = new System.Windows.Forms.DataGridView();
+            this.materialCheckbox1 = new MaterialSkin.Controls.MaterialCheckbox();
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
             this.materialLabel4 = new MaterialSkin.Controls.MaterialLabel();
             this.textBox1 = new System.Windows.Forms.TextBox();
@@ -66,12 +67,12 @@ namespace UI_Testing
             this.textBoxSheetUrl.Depth = 0;
             this.textBoxSheetUrl.Font = new System.Drawing.Font("Roboto", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
             this.textBoxSheetUrl.LeadingIcon = null;
-            this.textBoxSheetUrl.Location = new System.Drawing.Point(3, 29);
+            this.textBoxSheetUrl.Location = new System.Drawing.Point(3, 35);
             this.textBoxSheetUrl.MaxLength = 500;
             this.textBoxSheetUrl.MouseState = MaterialSkin.MouseState.OUT;
             this.textBoxSheetUrl.Multiline = false;
             this.textBoxSheetUrl.Name = "textBoxSheetUrl";
-            this.textBoxSheetUrl.Size = new System.Drawing.Size(308, 50);
+            this.textBoxSheetUrl.Size = new System.Drawing.Size(306, 50);
             this.textBoxSheetUrl.TabIndex = 0;
             this.textBoxSheetUrl.Text = "";
             this.textBoxSheetUrl.TrailingIcon = null;
@@ -85,12 +86,12 @@ namespace UI_Testing
             this.textBoxStyleSheetUrl.Depth = 0;
             this.textBoxStyleSheetUrl.Font = new System.Drawing.Font("Roboto", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
             this.textBoxStyleSheetUrl.LeadingIcon = null;
-            this.textBoxStyleSheetUrl.Location = new System.Drawing.Point(317, 29);
+            this.textBoxStyleSheetUrl.Location = new System.Drawing.Point(315, 35);
             this.textBoxStyleSheetUrl.MaxLength = 200;
             this.textBoxStyleSheetUrl.MouseState = MaterialSkin.MouseState.OUT;
             this.textBoxStyleSheetUrl.Multiline = false;
             this.textBoxStyleSheetUrl.Name = "textBoxStyleSheetUrl";
-            this.textBoxStyleSheetUrl.Size = new System.Drawing.Size(303, 50);
+            this.textBoxStyleSheetUrl.Size = new System.Drawing.Size(302, 50);
             this.textBoxStyleSheetUrl.TabIndex = 1;
             this.textBoxStyleSheetUrl.Text = "";
             this.textBoxStyleSheetUrl.TrailingIcon = null;
@@ -104,12 +105,12 @@ namespace UI_Testing
             this.textBoxVersion.Depth = 0;
             this.textBoxVersion.Font = new System.Drawing.Font("Roboto", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
             this.textBoxVersion.LeadingIcon = null;
-            this.textBoxVersion.Location = new System.Drawing.Point(3, 147);
-            this.textBoxVersion.MaxLength = 50;
+            this.textBoxVersion.Location = new System.Drawing.Point(3, 139);
+            this.textBoxVersion.MaxLength = 999999;
             this.textBoxVersion.MouseState = MaterialSkin.MouseState.OUT;
             this.textBoxVersion.Multiline = false;
             this.textBoxVersion.Name = "textBoxVersion";
-            this.textBoxVersion.Size = new System.Drawing.Size(308, 50);
+            this.textBoxVersion.Size = new System.Drawing.Size(306, 50);
             this.textBoxVersion.TabIndex = 2;
             this.textBoxVersion.Text = "";
             this.textBoxVersion.TrailingIcon = null;
@@ -118,7 +119,7 @@ namespace UI_Testing
             // 
             this.checkBoxNoStyle.AutoSize = true;
             this.checkBoxNoStyle.Depth = 0;
-            this.checkBoxNoStyle.Location = new System.Drawing.Point(623, 144);
+            this.checkBoxNoStyle.Location = new System.Drawing.Point(620, 136);
             this.checkBoxNoStyle.Margin = new System.Windows.Forms.Padding(0);
             this.checkBoxNoStyle.MouseLocation = new System.Drawing.Point(-1, -1);
             this.checkBoxNoStyle.MouseState = MaterialSkin.MouseState.HOVER;
@@ -135,7 +136,7 @@ namespace UI_Testing
             // 
             this.checkBoxIteration.AutoSize = true;
             this.checkBoxIteration.Depth = 0;
-            this.checkBoxIteration.Location = new System.Drawing.Point(623, 99);
+            this.checkBoxIteration.Location = new System.Drawing.Point(620, 90);
             this.checkBoxIteration.Margin = new System.Windows.Forms.Padding(0);
             this.checkBoxIteration.MouseLocation = new System.Drawing.Point(-1, -1);
             this.checkBoxIteration.MouseState = MaterialSkin.MouseState.HOVER;
@@ -149,11 +150,12 @@ namespace UI_Testing
             // 
             // checkBoxPreview
             // 
+            this.checkBoxPreview.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.checkBoxPreview.AutoSize = true;
             this.checkBoxPreview.Checked = true;
             this.checkBoxPreview.CheckState = System.Windows.Forms.CheckState.Checked;
             this.checkBoxPreview.Depth = 0;
-            this.checkBoxPreview.Location = new System.Drawing.Point(314, 99);
+            this.checkBoxPreview.Location = new System.Drawing.Point(474, 90);
             this.checkBoxPreview.Margin = new System.Windows.Forms.Padding(0);
             this.checkBoxPreview.MouseLocation = new System.Drawing.Point(-1, -1);
             this.checkBoxPreview.MouseState = MaterialSkin.MouseState.HOVER;
@@ -174,7 +176,7 @@ namespace UI_Testing
             this.materialButton1.Depth = 0;
             this.materialButton1.HighEmphasis = true;
             this.materialButton1.Icon = null;
-            this.materialButton1.Location = new System.Drawing.Point(739, 32);
+            this.materialButton1.Location = new System.Drawing.Point(736, 38);
             this.materialButton1.Margin = new System.Windows.Forms.Padding(4, 6, 4, 6);
             this.materialButton1.MouseState = MaterialSkin.MouseState.HOVER;
             this.materialButton1.Name = "materialButton1";
@@ -189,9 +191,10 @@ namespace UI_Testing
             // 
             // materialCheckbox
             // 
+            this.materialCheckbox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.materialCheckbox.AutoSize = true;
             this.materialCheckbox.Depth = 0;
-            this.materialCheckbox.Location = new System.Drawing.Point(314, 144);
+            this.materialCheckbox.Location = new System.Drawing.Point(472, 136);
             this.materialCheckbox.Margin = new System.Windows.Forms.Padding(0);
             this.materialCheckbox.MouseLocation = new System.Drawing.Point(-1, -1);
             this.materialCheckbox.MouseState = MaterialSkin.MouseState.HOVER;
@@ -246,7 +249,7 @@ namespace UI_Testing
             this.materialLabel1.AutoSize = true;
             this.materialLabel1.Depth = 0;
             this.materialLabel1.Font = new System.Drawing.Font("Roboto", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
-            this.materialLabel1.Location = new System.Drawing.Point(3, 7);
+            this.materialLabel1.Location = new System.Drawing.Point(3, 13);
             this.materialLabel1.MouseState = MaterialSkin.MouseState.HOVER;
             this.materialLabel1.Name = "materialLabel1";
             this.materialLabel1.Size = new System.Drawing.Size(105, 19);
@@ -259,7 +262,7 @@ namespace UI_Testing
             this.materialLabel2.AutoSize = true;
             this.materialLabel2.Depth = 0;
             this.materialLabel2.Font = new System.Drawing.Font("Roboto", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
-            this.materialLabel2.Location = new System.Drawing.Point(317, 7);
+            this.materialLabel2.Location = new System.Drawing.Point(315, 13);
             this.materialLabel2.MouseState = MaterialSkin.MouseState.HOVER;
             this.materialLabel2.Name = "materialLabel2";
             this.materialLabel2.Size = new System.Drawing.Size(194, 19);
@@ -268,14 +271,15 @@ namespace UI_Testing
             // 
             // materialLabel3
             // 
-            this.materialLabel3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.materialLabel3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.materialLabel3.AutoSize = true;
             this.materialLabel3.Depth = 0;
             this.materialLabel3.Font = new System.Drawing.Font("Roboto", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
-            this.materialLabel3.Location = new System.Drawing.Point(3, 125);
+            this.materialLabel3.Location = new System.Drawing.Point(3, 117);
             this.materialLabel3.MouseState = MaterialSkin.MouseState.HOVER;
             this.materialLabel3.Name = "materialLabel3";
-            this.materialLabel3.Size = new System.Drawing.Size(46, 19);
+            this.materialLabel3.Size = new System.Drawing.Size(306, 19);
             this.materialLabel3.TabIndex = 13;
             this.materialLabel3.Text = "Скоуп";
             // 
@@ -287,7 +291,7 @@ namespace UI_Testing
             this.materialButton2.Depth = 0;
             this.materialButton2.HighEmphasis = true;
             this.materialButton2.Icon = null;
-            this.materialButton2.Location = new System.Drawing.Point(739, 105);
+            this.materialButton2.Location = new System.Drawing.Point(736, 96);
             this.materialButton2.Margin = new System.Windows.Forms.Padding(4, 6, 4, 6);
             this.materialButton2.MouseState = MaterialSkin.MouseState.HOVER;
             this.materialButton2.Name = "materialButton2";
@@ -309,7 +313,7 @@ namespace UI_Testing
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50.39872F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 49.60128F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 112F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 156F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 159F));
             this.tableLayoutPanel1.Controls.Add(this.materialLabel1, 0, 0);
             this.tableLayoutPanel1.Controls.Add(this.textBoxSheetUrl, 0, 1);
             this.tableLayoutPanel1.Controls.Add(this.materialLabel3, 0, 2);
@@ -322,16 +326,16 @@ namespace UI_Testing
             this.tableLayoutPanel1.Controls.Add(this.materialButton2, 3, 2);
             this.tableLayoutPanel1.Controls.Add(this.checkBoxPreview, 1, 2);
             this.tableLayoutPanel1.Controls.Add(this.checkBoxIteration, 2, 2);
+            this.tableLayoutPanel1.Controls.Add(this.materialCheckbox1, 3, 3);
             this.tableLayoutPanel1.Controls.Add(this.dataGridViewPreview, 0, 4);
             this.tableLayoutPanel1.Location = new System.Drawing.Point(6, 96);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 5;
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 26.26263F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 73.73737F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 45F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 56F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 332F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 32F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 58F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 46F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 57F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel1.Size = new System.Drawing.Size(892, 533);
             this.tableLayoutPanel1.TabIndex = 19;
             // 
@@ -343,10 +347,26 @@ namespace UI_Testing
             | System.Windows.Forms.AnchorStyles.Right)));
             this.dataGridViewPreview.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.tableLayoutPanel1.SetColumnSpan(this.dataGridViewPreview, 4);
-            this.dataGridViewPreview.Location = new System.Drawing.Point(3, 203);
+            this.dataGridViewPreview.Location = new System.Drawing.Point(3, 196);
             this.dataGridViewPreview.Name = "dataGridViewPreview";
-            this.dataGridViewPreview.Size = new System.Drawing.Size(886, 327);
+            this.dataGridViewPreview.Size = new System.Drawing.Size(886, 334);
             this.dataGridViewPreview.TabIndex = 8;
+            // 
+            // materialCheckbox1
+            // 
+            this.materialCheckbox1.AutoSize = true;
+            this.materialCheckbox1.Depth = 0;
+            this.materialCheckbox1.Location = new System.Drawing.Point(732, 136);
+            this.materialCheckbox1.Margin = new System.Windows.Forms.Padding(0);
+            this.materialCheckbox1.MouseLocation = new System.Drawing.Point(-1, -1);
+            this.materialCheckbox1.MouseState = MaterialSkin.MouseState.HOVER;
+            this.materialCheckbox1.Name = "materialCheckbox1";
+            this.materialCheckbox1.ReadOnly = false;
+            this.materialCheckbox1.Ripple = true;
+            this.materialCheckbox1.Size = new System.Drawing.Size(101, 37);
+            this.materialCheckbox1.TabIndex = 16;
+            this.materialCheckbox1.Text = "из цикла";
+            this.materialCheckbox1.UseVisualStyleBackColor = true;
             // 
             // tableLayoutPanel2
             // 
@@ -380,7 +400,8 @@ namespace UI_Testing
             // 
             // textBox1
             // 
-            this.textBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            this.textBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.textBox1.Enabled = false;
             this.textBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
@@ -394,15 +415,16 @@ namespace UI_Testing
             // 
             // tableLayoutPanel3
             // 
-            this.tableLayoutPanel3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            this.tableLayoutPanel3.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tableLayoutPanel3.ColumnCount = 1;
-            this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel3.Location = new System.Drawing.Point(3, 299);
+            this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel3.Location = new System.Drawing.Point(3, 290);
             this.tableLayoutPanel3.Name = "tableLayoutPanel3";
             this.tableLayoutPanel3.RowCount = 1;
-            this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel3.Size = new System.Drawing.Size(895, 329);
+            this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel3.Size = new System.Drawing.Size(895, 338);
             this.tableLayoutPanel3.TabIndex = 25;
             // 
             // MainForm
@@ -411,9 +433,9 @@ namespace UI_Testing
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(901, 635);
             this.Controls.Add(this.menuStrip);
-            this.Controls.Add(this.tableLayoutPanel3);
             this.Controls.Add(this.tableLayoutPanel1);
             this.Controls.Add(this.tableLayoutPanel2);
+            this.Controls.Add(this.tableLayoutPanel3);
             this.MainMenuStrip = this.menuStrip;
             this.MinimumSize = new System.Drawing.Size(901, 635);
             this.Name = "MainForm";
@@ -455,5 +477,6 @@ namespace UI_Testing
         private MaterialSkin.Controls.MaterialLabel materialLabel4;
         private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel3;
+        private MaterialSkin.Controls.MaterialCheckbox materialCheckbox1;
     }
 }

@@ -2,6 +2,7 @@
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -56,7 +57,14 @@ namespace UI_Testing
 
                 string cycleName = Regex.Match(zqlDecoded, @"cycleName\s*(=|in)\s*\(?""([^""]+)""\)?").Groups[2].Value;
                 string version = Regex.Match(zqlDecoded, @"fixVersion\s*=\s*""([^""]+)""").Groups[1].Value;
+                version = version == "Незапланированные" ? "Unscheduled" : version;
                 string project = Regex.Match(zqlDecoded, @"project\s*=\s*""([^""]+)""").Groups[1].Value;
+                string folderName = "";
+                var folderMatch = Regex.Match(zqlDecoded, @"folderName\s*in\s*\(\s*""([^""]+)""\s*\)", RegexOptions.IgnoreCase);
+                if (folderMatch.Success)
+                {
+                    folderName = folderMatch.Groups[1].Value;
+                }
 
                 if (string.IsNullOrWhiteSpace(cycleName) || string.IsNullOrWhiteSpace(version) || string.IsNullOrWhiteSpace(project))
                     continue;
@@ -67,11 +75,11 @@ namespace UI_Testing
                     CycleName = cycleName,
                     Version = version,
                     Project = project,
-                    Total = await GetTestCountByStatus(cycleName, version, project),
-                    Passed = await GetTestCountByStatus(cycleName, version, project, "%3D+PASS"),
-                    Failed = await GetTestCountByStatus(cycleName, version, project, "%3D+FAIL"),
-                    Errored = await GetTestCountByStatus(cycleName, version, project, "%3D+%22PASS+WITH+BUG%22"),
-                    Blocked = await GetTestCountByStatus(cycleName, version, project, "%3D+BLOCKED")
+                    Total = await GetTestCountByStatus(cycleName, version, project, null, folderName),
+                    Passed = await GetTestCountByStatus(cycleName, version, project, "%3D+PASS", folderName),
+                    Failed = await GetTestCountByStatus(cycleName, version, project, "%3D+FAIL", folderName),
+                    Errored = await GetTestCountByStatus(cycleName, version, project, "%3D+%22PASS+WITH+BUG%22", folderName),
+                    Blocked = await GetTestCountByStatus(cycleName, version, project, "%3D+BLOCKED", folderName)
                 };
 
                 results.Add(stats);
@@ -104,13 +112,16 @@ namespace UI_Testing
                 return null;
             }
         }
-        public async Task<int> GetTestCountByStatus(string cycleName, string version, string project, string status = null)
+        public async Task<int> GetTestCountByStatus(string cycleName, string version, string project, string status = null, string folderName = null)
         {
             string token = await GetAoToken();
 
             string baseUrl = "https://jira.mos.social/rest/zephyr/latest/zql/executeSearch/";
             var builder = new StringBuilder();
             builder.Append($"?zqlQuery=cycleName=\"{Uri.EscapeDataString(cycleName)}\"");
+            if (!string.IsNullOrWhiteSpace(folderName))
+                builder.Append($"+AND+folderName=\"{Uri.EscapeDataString(folderName)}\"");
+            builder.Append($"+AND+fixVersion=\"{Uri.EscapeDataString(version)}\"");
             builder.Append($"+AND+project=\"{Uri.EscapeDataString(project)}\"");
 
             if (!string.IsNullOrEmpty(status))
@@ -118,13 +129,8 @@ namespace UI_Testing
 
             string fullUrl = baseUrl + builder.ToString();
             var request = new HttpRequestMessage(HttpMethod.Get, fullUrl);
-
-            // ЗАГОЛОВКИ
             request.Headers.Add("ao-7deabf", token);
-
-            // ДОБАВЛЯЕМ КУКИ ЯВНО
             request.Headers.UserAgent.ParseAdd("PostmanRuntime/7.44.0");
-            // [ОПЦИОНАЛЬНО] Для отладки
 
             var response = await httpClient.SendAsync(request);
 
@@ -143,9 +149,14 @@ namespace UI_Testing
         public async Task<List<JiraIssue>> GetIssuesByVersion(string version)
         {
             var issues = new List<JiraIssue>();
+            int startAt = 0;
+            int maxResults = 1000;
 
-            string jql = $"fixVersion = \"{version}\" ORDER BY key ASC";
-            string url = $"{BaseUrl}/rest/api/2/search?jql={Uri.EscapeDataString(jql)}&fields=key,summary,issuetype,status,priority,issuelinks";
+            string jql = $"fixVersion = \"{version}\" ORDER BY priority DESC, key ASC";
+            string url = $"{BaseUrl}/rest/api/2/search" +
+                            $"?jql={Uri.EscapeDataString(jql)}" +
+                            $"&fields=key,summary,issuetype,status,priority,issuelinks" +
+                            $"&startAt={startAt}&maxResults={maxResults}";
 
             var response = await httpClient.GetAsync(url);
             if (!response.IsSuccessStatusCode)
@@ -163,7 +174,10 @@ namespace UI_Testing
             }
 
             using var doc = JsonDocument.Parse(json);
-            foreach (var issueElem in doc.RootElement.GetProperty("issues").EnumerateArray())
+            var root = doc.RootElement;
+
+            var issueArray = root.GetProperty("issues");
+            foreach (var issueElem in issueArray.EnumerateArray())
             {
                 var issue = JsonSerializer.Deserialize<JiraIssue>(issueElem.GetRawText());
                 if (issue != null) issues.Add(issue);
@@ -220,37 +234,156 @@ namespace UI_Testing
         {
             var testCases = new List<JiraIssue>();
 
-            if (issue.Fields.IssueLinks == null)
+            if (issue?.Fields?.IssueLinks == null)
                 return testCases;
 
             foreach (var link in issue.Fields.IssueLinks)
             {
-                // Проверяем outward-связь и тип "is tested by"
-                if (link.OutwardIssue != null &&
-                    link.Type != null &&
-                    link.Type.Outward == "is tested by" &&
+                // Outward: "is tested by"
+                if (link?.OutwardIssue != null &&
+                    link.Type?.Outward == "is tested by" &&
                     link.OutwardIssue.Fields?.IssueType?.Name == "Test")
                 {
                     testCases.Add(link.OutwardIssue);
                 }
-                if (link.InwardIssue != null &&
-                link.Type != null &&
-                link.Type.Inward == "tested by" &&
-                link.OutwardIssue.Fields?.IssueType?.Name == "Test")
+                if (link?.OutwardIssue != null &&
+                    link.Type?.Outward == "tests" &&
+                    link.OutwardIssue.Fields?.IssueType?.Name == "Test")
+                {
+                    testCases.Add(link.OutwardIssue);
+                }
+                // Inward: "tested by"
+                if (link?.InwardIssue != null &&
+                    link.Type?.Inward == "tested by" &&
+                    link.InwardIssue.Fields?.IssueType?.Name == "Test")
                 {
                     testCases.Add(link.InwardIssue);
                 }
-                if (link.InwardIssue != null &&
-                link.Type != null &&
-                link.Type.Inward == "is a test for" &&
-                link.OutwardIssue.Fields?.IssueType?.Name == "Test")
+
+                // Inward: "is a test for"
+                if (link?.InwardIssue != null &&
+                    link.Type?.Inward == "is a test for" &&
+                    link.InwardIssue.Fields?.IssueType?.Name == "Test")
                 {
                     testCases.Add(link.InwardIssue);
                 }
-                // с типом связи "tests", можно добавить аналогично.
             }
 
             return testCases;
+        }
+        public (string CycleName, string Version, string Project, List<string> FolderNames, string ExecutionStatus) ParseZqlUrl(string url)
+        {
+            var result = (
+                CycleName: "",
+                Version: "",
+                Project: "",
+                FolderNames: new List<string>(),
+                ExecutionStatus: ""
+            );
+
+            int queryIndex = url.IndexOf("#?query=");
+            if (queryIndex == -1)
+                return result;
+
+            string zqlEncoded = url.Substring(queryIndex + "#?query=".Length);
+            string zqlDecoded = Uri.UnescapeDataString(zqlEncoded);
+
+            // Основные поля
+            result.CycleName = Regex.Match(zqlDecoded, @"cycleName\s*=\s*""([^""]+)""").Groups[1].Value;
+            result.Version = Regex.Match(zqlDecoded, @"fixVersion\s*=\s*""([^""]+)""").Groups[1].Value;
+            result.Project = Regex.Match(zqlDecoded, @"project\s*=\s*""([^""]+)""").Groups[1].Value;
+
+            // FolderNames (если есть)
+            var folderMatch = Regex.Match(zqlDecoded, @"folderName\s+IN\s*\(([^)]+)\)", RegexOptions.IgnoreCase);
+            if (folderMatch.Success)
+            {
+                string group = folderMatch.Groups[1].Value;
+                var folderNames = Regex.Matches(group, @"""([^""]+)""")
+                                       .Cast<Match>()
+                                       .Select(m => m.Groups[1].Value)
+                                       .ToList();
+                result.FolderNames = folderNames;
+            }
+
+            // ExecutionStatus (если есть)
+            var execStatusMatch = Regex.Match(zqlDecoded, @"executionStatus\s*=\s*(\w+)", RegexOptions.IgnoreCase);
+            if (execStatusMatch.Success)
+            {
+                result.ExecutionStatus = execStatusMatch.Groups[1].Value;
+            }
+
+            return result;
+        }
+        public async Task<List<JiraIssue>> GetTestCasesFromCycle(string cycleName, string version, string project, List<string> folderNames, string executionStatus)
+        {
+            var token = await GetAoToken();
+            var allTests = new List<JiraIssue>();
+            int startAt = 0;
+            const int maxResults = 1000;
+
+            do
+            {
+                var builder = new StringBuilder();
+                builder.Append($"?zqlQuery=cycleName=\"{Uri.EscapeDataString(cycleName)}\"");
+                builder.Append($"+AND+fixVersion=\"{Uri.EscapeDataString(version)}\"");
+                builder.Append($"+AND+project=\"{Uri.EscapeDataString(project)}\"");
+
+                if (folderNames != null && folderNames.Count > 0)
+                {
+                    var joinedFolders = string.Join(",", folderNames.Select(f => $"\"{Uri.EscapeDataString(f)}\""));
+                    builder.Append($"+AND+folderName+IN+({joinedFolders})");
+                }
+                if (executionStatus != null)
+                {
+                    builder.Append($"+AND+executionStatus+=+{executionStatus}");
+                }
+                builder.Append($"&startAt={startAt}&maxRecords={maxResults}");
+
+                string url = "https://jira.mos.social/rest/zephyr/latest/zql/executeSearch/" + builder.ToString();
+                MaterialMessageBox.Show(url);
+                var request = new HttpRequestMessage(HttpMethod.Get, url);
+                request.Headers.Add("ao-7deabf", token);
+                request.Headers.UserAgent.ParseAdd("PostmanRuntime/7.44.0");
+
+                var response = await httpClient.SendAsync(request);
+                if (!response.IsSuccessStatusCode)
+                {
+                    string content = await response.Content.ReadAsStringAsync();
+                    throw new Exception($"Ошибка запроса: {response.StatusCode}\n{content}");
+                }
+
+                string json = await response.Content.ReadAsStringAsync();
+                var data = JObject.Parse(json);
+                var executions = data["executions"];
+                if (executions == null) break;
+
+                foreach (var exec in executions)
+                {
+                    string key = exec["issueKey"]?.ToString();
+                    string summary = exec["issueSummary"]?.ToString();
+                    string priority = exec["priority"]?.ToString();
+
+                    allTests.Add(new JiraIssue
+                    {
+                        Key = key,
+                        Fields = new JiraFields
+                        {
+                            Summary = summary,
+                            Priority = new Priority { Name = priority },
+                            IssueType = new IssueType { Name = "Test" }
+                        }
+                    });
+                }
+
+                int totalCount = data["totalCount"]?.Value<int>() ?? 0;
+                if (startAt + maxResults >= totalCount)
+                    break;
+
+                startAt += maxResults;
+
+            } while (true);
+
+            return allTests;
         }
         public class JiraIssue
         {
