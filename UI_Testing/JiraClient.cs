@@ -271,50 +271,20 @@ namespace UI_Testing
 
             return testCases;
         }
-        public (string CycleName, string Version, string Project, List<string> FolderNames, string ExecutionStatus) ParseZqlUrl(string url)
+        public string ParseZqlUrl(string url)
         {
-            var result = (
-                CycleName: "",
-                Version: "",
-                Project: "",
-                FolderNames: new List<string>(),
-                ExecutionStatus: ""
-            );
-
             int queryIndex = url.IndexOf("#?query=");
             if (queryIndex == -1)
-                return result;
+                return "";
 
             string zqlEncoded = url.Substring(queryIndex + "#?query=".Length);
-            string zqlDecoded = Uri.UnescapeDataString(zqlEncoded);
+            int endIndex = zqlEncoded.IndexOf("&"); // обрезаем все, что после query=
+            if (endIndex >= 0)
+                zqlEncoded = zqlEncoded.Substring(0, endIndex);
 
-            // Основные поля
-            result.CycleName = Regex.Match(zqlDecoded, @"cycleName\s*=\s*""([^""]+)""").Groups[1].Value;
-            result.Version = Regex.Match(zqlDecoded, @"fixVersion\s*=\s*""([^""]+)""").Groups[1].Value;
-            result.Project = Regex.Match(zqlDecoded, @"project\s*=\s*""([^""]+)""").Groups[1].Value;
-
-            // FolderNames (если есть)
-            var folderMatch = Regex.Match(zqlDecoded, @"folderName\s+IN\s*\(([^)]+)\)", RegexOptions.IgnoreCase);
-            if (folderMatch.Success)
-            {
-                string group = folderMatch.Groups[1].Value;
-                var folderNames = Regex.Matches(group, @"""([^""]+)""")
-                                       .Cast<Match>()
-                                       .Select(m => m.Groups[1].Value)
-                                       .ToList();
-                result.FolderNames = folderNames;
-            }
-
-            // ExecutionStatus (если есть)
-            var execStatusMatch = Regex.Match(zqlDecoded, @"executionStatus\s*=\s*(\w+)", RegexOptions.IgnoreCase);
-            if (execStatusMatch.Success)
-            {
-                result.ExecutionStatus = execStatusMatch.Groups[1].Value;
-            }
-
-            return result;
+            return Uri.UnescapeDataString(zqlEncoded);
         }
-        public async Task<List<JiraIssue>> GetTestCasesFromCycle(string cycleName, string version, string project, List<string> folderNames, string executionStatus)
+        public async Task<List<JiraIssue>> GetTestCasesFromCycle(string zql)
         {
             var token = await GetAoToken();
             var allTests = new List<JiraIssue>();
@@ -323,25 +293,10 @@ namespace UI_Testing
 
             do
             {
-                var builder = new StringBuilder();
-                builder.Append($"?zqlQuery=cycleName=\"{Uri.EscapeDataString(cycleName)}\"");
-                builder.Append($"+AND+fixVersion=\"{Uri.EscapeDataString(version)}\"");
-                builder.Append($"+AND+project=\"{Uri.EscapeDataString(project)}\"");
+                string encodedZql = Uri.EscapeDataString(zql);
+                string fullUrl = $"https://jira.mos.social/rest/zephyr/latest/zql/executeSearch/?zqlQuery={encodedZql}&startAt={startAt}&maxRecords={maxResults}";
 
-                if (folderNames != null && folderNames.Count > 0)
-                {
-                    var joinedFolders = string.Join(",", folderNames.Select(f => $"\"{Uri.EscapeDataString(f)}\""));
-                    builder.Append($"+AND+folderName+IN+({joinedFolders})");
-                }
-                if (executionStatus != null)
-                {
-                    builder.Append($"+AND+executionStatus+=+{executionStatus}");
-                }
-                builder.Append($"&startAt={startAt}&maxRecords={maxResults}");
-
-                string url = "https://jira.mos.social/rest/zephyr/latest/zql/executeSearch/" + builder.ToString();
-                MaterialMessageBox.Show(url);
-                var request = new HttpRequestMessage(HttpMethod.Get, url);
+                var request = new HttpRequestMessage(HttpMethod.Get, fullUrl);
                 request.Headers.Add("ao-7deabf", token);
                 request.Headers.UserAgent.ParseAdd("PostmanRuntime/7.44.0");
 
@@ -363,6 +318,10 @@ namespace UI_Testing
                     string summary = exec["issueSummary"]?.ToString();
                     string priority = exec["priority"]?.ToString();
 
+                    string rawStatus = exec["status"]?["name"]?.ToString();
+                    // Если статус UNEXECUTED или WIP, оставляем пустым
+                    string executionStatus = (rawStatus == "UNEXECUTED" || rawStatus == "WIP") ? "" : rawStatus;
+
                     allTests.Add(new JiraIssue
                     {
                         Key = key,
@@ -370,7 +329,8 @@ namespace UI_Testing
                         {
                             Summary = summary,
                             Priority = new Priority { Name = priority },
-                            IssueType = new IssueType { Name = "Test" }
+                            IssueType = new IssueType { Name = "Test" },
+                            ExecutionStatus = executionStatus
                         }
                     });
                 }
@@ -385,6 +345,7 @@ namespace UI_Testing
 
             return allTests;
         }
+
         public class JiraIssue
         {
             [JsonPropertyName("key")]
@@ -419,6 +380,8 @@ namespace UI_Testing
 
             [System.Text.Json.Serialization.JsonIgnore]
             public string PriorityValue => Priority?.Name;
+            [System.Text.Json.Serialization.JsonIgnore]
+            public string ExecutionStatus { get; set; }
         }
 
         public class IssueType

@@ -46,8 +46,8 @@ namespace UI_Testing
             this.materialLabel3 = new MaterialSkin.Controls.MaterialLabel();
             this.materialButton2 = new MaterialSkin.Controls.MaterialButton();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-            this.dataGridViewPreview = new System.Windows.Forms.DataGridView();
             this.materialCheckbox1 = new MaterialSkin.Controls.MaterialCheckbox();
+            this.dataGridViewPreview = new System.Windows.Forms.DataGridView();
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
             this.materialLabel4 = new MaterialSkin.Controls.MaterialLabel();
             this.textBox1 = new System.Windows.Forms.TextBox();
@@ -91,7 +91,7 @@ namespace UI_Testing
             this.textBoxStyleSheetUrl.MouseState = MaterialSkin.MouseState.OUT;
             this.textBoxStyleSheetUrl.Multiline = false;
             this.textBoxStyleSheetUrl.Name = "textBoxStyleSheetUrl";
-            this.textBoxStyleSheetUrl.Size = new System.Drawing.Size(302, 50);
+            this.textBoxStyleSheetUrl.Size = new System.Drawing.Size(301, 50);
             this.textBoxStyleSheetUrl.TabIndex = 1;
             this.textBoxStyleSheetUrl.Text = "";
             this.textBoxStyleSheetUrl.TrailingIcon = null;
@@ -119,7 +119,7 @@ namespace UI_Testing
             // 
             this.checkBoxNoStyle.AutoSize = true;
             this.checkBoxNoStyle.Depth = 0;
-            this.checkBoxNoStyle.Location = new System.Drawing.Point(620, 136);
+            this.checkBoxNoStyle.Location = new System.Drawing.Point(619, 136);
             this.checkBoxNoStyle.Margin = new System.Windows.Forms.Padding(0);
             this.checkBoxNoStyle.MouseLocation = new System.Drawing.Point(-1, -1);
             this.checkBoxNoStyle.MouseState = MaterialSkin.MouseState.HOVER;
@@ -136,7 +136,7 @@ namespace UI_Testing
             // 
             this.checkBoxIteration.AutoSize = true;
             this.checkBoxIteration.Depth = 0;
-            this.checkBoxIteration.Location = new System.Drawing.Point(620, 90);
+            this.checkBoxIteration.Location = new System.Drawing.Point(619, 90);
             this.checkBoxIteration.Margin = new System.Windows.Forms.Padding(0);
             this.checkBoxIteration.MouseLocation = new System.Drawing.Point(-1, -1);
             this.checkBoxIteration.MouseState = MaterialSkin.MouseState.HOVER;
@@ -155,7 +155,7 @@ namespace UI_Testing
             this.checkBoxPreview.Checked = true;
             this.checkBoxPreview.CheckState = System.Windows.Forms.CheckState.Checked;
             this.checkBoxPreview.Depth = 0;
-            this.checkBoxPreview.Location = new System.Drawing.Point(474, 90);
+            this.checkBoxPreview.Location = new System.Drawing.Point(473, 90);
             this.checkBoxPreview.Margin = new System.Windows.Forms.Padding(0);
             this.checkBoxPreview.MouseLocation = new System.Drawing.Point(-1, -1);
             this.checkBoxPreview.MouseState = MaterialSkin.MouseState.HOVER;
@@ -176,7 +176,7 @@ namespace UI_Testing
             this.materialButton1.Depth = 0;
             this.materialButton1.HighEmphasis = true;
             this.materialButton1.Icon = null;
-            this.materialButton1.Location = new System.Drawing.Point(736, 38);
+            this.materialButton1.Location = new System.Drawing.Point(735, 38);
             this.materialButton1.Margin = new System.Windows.Forms.Padding(4, 6, 4, 6);
             this.materialButton1.MouseState = MaterialSkin.MouseState.HOVER;
             this.materialButton1.Name = "materialButton1";
@@ -194,7 +194,7 @@ namespace UI_Testing
             this.materialCheckbox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.materialCheckbox.AutoSize = true;
             this.materialCheckbox.Depth = 0;
-            this.materialCheckbox.Location = new System.Drawing.Point(472, 136);
+            this.materialCheckbox.Location = new System.Drawing.Point(471, 136);
             this.materialCheckbox.Margin = new System.Windows.Forms.Padding(0);
             this.materialCheckbox.MouseLocation = new System.Drawing.Point(-1, -1);
             this.materialCheckbox.MouseState = MaterialSkin.MouseState.HOVER;
@@ -291,7 +291,7 @@ namespace UI_Testing
             this.materialButton2.Depth = 0;
             this.materialButton2.HighEmphasis = true;
             this.materialButton2.Icon = null;
-            this.materialButton2.Location = new System.Drawing.Point(736, 96);
+            this.materialButton2.Location = new System.Drawing.Point(735, 96);
             this.materialButton2.Margin = new System.Windows.Forms.Padding(4, 6, 4, 6);
             this.materialButton2.MouseState = MaterialSkin.MouseState.HOVER;
             this.materialButton2.Name = "materialButton2";
@@ -313,7 +313,7 @@ namespace UI_Testing
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50.39872F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 49.60128F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 112F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 159F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 160F));
             this.tableLayoutPanel1.Controls.Add(this.materialLabel1, 0, 0);
             this.tableLayoutPanel1.Controls.Add(this.textBoxSheetUrl, 0, 1);
             this.tableLayoutPanel1.Controls.Add(this.materialLabel3, 0, 2);
@@ -339,6 +339,23 @@ namespace UI_Testing
             this.tableLayoutPanel1.Size = new System.Drawing.Size(892, 533);
             this.tableLayoutPanel1.TabIndex = 19;
             // 
+            // materialCheckbox1
+            // 
+            this.materialCheckbox1.AutoSize = true;
+            this.materialCheckbox1.Depth = 0;
+            this.materialCheckbox1.Location = new System.Drawing.Point(731, 136);
+            this.materialCheckbox1.Margin = new System.Windows.Forms.Padding(0);
+            this.materialCheckbox1.MouseLocation = new System.Drawing.Point(-1, -1);
+            this.materialCheckbox1.MouseState = MaterialSkin.MouseState.HOVER;
+            this.materialCheckbox1.Name = "materialCheckbox1";
+            this.materialCheckbox1.ReadOnly = false;
+            this.materialCheckbox1.Ripple = true;
+            this.materialCheckbox1.Size = new System.Drawing.Size(101, 37);
+            this.materialCheckbox1.TabIndex = 16;
+            this.materialCheckbox1.Text = "из цикла";
+            this.materialCheckbox1.UseVisualStyleBackColor = true;
+            this.materialCheckbox1.CheckedChanged += new System.EventHandler(this.materialCheckbox1_CheckedChanged);
+            // 
             // dataGridViewPreview
             // 
             this.dataGridViewPreview.AllowUserToOrderColumns = true;
@@ -351,22 +368,6 @@ namespace UI_Testing
             this.dataGridViewPreview.Name = "dataGridViewPreview";
             this.dataGridViewPreview.Size = new System.Drawing.Size(886, 334);
             this.dataGridViewPreview.TabIndex = 8;
-            // 
-            // materialCheckbox1
-            // 
-            this.materialCheckbox1.AutoSize = true;
-            this.materialCheckbox1.Depth = 0;
-            this.materialCheckbox1.Location = new System.Drawing.Point(732, 136);
-            this.materialCheckbox1.Margin = new System.Windows.Forms.Padding(0);
-            this.materialCheckbox1.MouseLocation = new System.Drawing.Point(-1, -1);
-            this.materialCheckbox1.MouseState = MaterialSkin.MouseState.HOVER;
-            this.materialCheckbox1.Name = "materialCheckbox1";
-            this.materialCheckbox1.ReadOnly = false;
-            this.materialCheckbox1.Ripple = true;
-            this.materialCheckbox1.Size = new System.Drawing.Size(101, 37);
-            this.materialCheckbox1.TabIndex = 16;
-            this.materialCheckbox1.Text = "из цикла";
-            this.materialCheckbox1.UseVisualStyleBackColor = true;
             // 
             // tableLayoutPanel2
             // 

@@ -239,7 +239,7 @@ namespace UI_Testing
 
             if (sheetStats.UntestedTaskLinks.Count > 0)
             {
-                sb.AppendLine("Не протестированных задач:");
+                sb.AppendLine($"Не протестированных задач: {sheetStats.UntestedTaskLinks.Count}");
                 foreach (var link in sheetStats.UntestedTaskLinks)
                     sb.AppendLine(link);
             }
@@ -329,15 +329,8 @@ namespace UI_Testing
         public async Task<List<List<object>>> ExportTestCasesFromUrl(string url)
         {
             var jira = new JiraClient(login, password);
-            var parsed = jira.ParseZqlUrl(url);
-
-            var testCases = await jira.GetTestCasesFromCycle(
-                parsed.CycleName,
-                parsed.Version == "Незапланированные" ? "Unscheduled" : parsed.Version,
-                parsed.Project,
-                parsed.FolderNames,
-                parsed.ExecutionStatus
-            );
+            string zql = jira.ParseZqlUrl(url);
+            var testCases = await jira.GetTestCasesFromCycle(zql);
 
             var rows = new List<List<object>>();
             int number = 1;
@@ -355,7 +348,7 @@ namespace UI_Testing
                     "1", "", // Кол-во тестов, шагов
                     "", // статус
                     test.Fields.PriorityValue,
-                    "", "", "" // Статус проверки, тестировщик и т.д.
+                    "", test.Fields.ExecutionStatus, "" // Статус проверки, тестировщик и т.д.
                 };
 
                 rows.Add(row);
@@ -733,7 +726,7 @@ namespace UI_Testing
                     stats.TotalTasks = Math.Max(stats.TotalTasks, firstCol);
 
                 // Closed
-                if (status == "Waiting for Release" || (status == "Closed" && (string.IsNullOrWhiteSpace(fifthCol) || fifthCol == "0")))
+                if (status == "Waiting for Release" || status == "Documentation" || (status == "Closed" && (string.IsNullOrWhiteSpace(fifthCol) || fifthCol == "0")))
                     stats.ClosedTasks++;
 
                 // Reopened
@@ -786,6 +779,18 @@ namespace UI_Testing
         private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
         {
             Environment.Exit(0);
+        }
+
+        private void materialCheckbox1_CheckedChanged(object sender, EventArgs e)
+        {
+            if (materialCheckbox1.Checked)
+            {
+                materialLabel3.Text = "Цикл";
+            }
+            else
+            {
+                materialLabel3.Text = "Задача";
+            }
         }
     }
     public class SheetStats
